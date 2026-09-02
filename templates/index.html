@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>College Video Library</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #050505;
+            color: #ffffff;
+
+            min-height: 100vh;
+        }
+
+        /* ==================================================
+           HERO
+        ================================================== */
+
+        .hero {
+
+            min-height: 300px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+
+            position: relative;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 50% 20%,
+                    #333,
+                    #111 35%,
+                    #050505 75%
+                );
+
+            background-attachment: fixed;
+        }
+
+        .hero::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 500px;
+            height: 500px;
+
+            border: 1px solid #333;
+
+            border-radius: 50%;
+
+            animation:
+                rotate
+                30s
+                linear
+                infinite;
+        }
+
+        .hero::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 700px;
+            height: 700px;
+
+            border: 1px solid #222;
+
+            border-radius: 50%;
+
+            animation:
+                rotateReverse
+                40s
+                linear
+                infinite;
+        }
+
+        @keyframes rotate {
+
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes rotateReverse {
+
+            from {
+                transform: rotate(360deg);
+            }
+
+            to {
+                transform: rotate(0deg);
+            }
+        }
+
+        .hero-content {
+
+            position: relative;
+
+            z-index: 2;
+
+            padding: 30px;
+        }
+
+        .hero h1 {
+
+            font-size:
+                clamp(
+                    32px,
+                    6vw,
+                    60px
+                );
+
+            margin-bottom: 12px;
+
+            letter-spacing: -2px;
+        }
+
+        .hero p {
+
+            color: #999;
+
+            margin-bottom: 20px;
+        }
+
+        .badge {
+
+            display: inline-block;
+
+            padding:
+                9px 18px;
+
+            border:
+                1px solid #555;
+
+            border-radius: 50px;
+
+            background: #fff;
+
+            color: #000;
+
+            font-weight: bold;
+        }
+
+        /* ==================================================
+           CONTAINER
+        ================================================== */
+
+        .container {
+
+            max-width: 1200px;
+
+            margin: auto;
+
+            padding:
+                40px 20px 70px;
+        }
+
+        /* ==================================================
+           TOOLBAR
+        ================================================== */
+
+        .toolbar {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content:
+                space-between;
+
+            margin-bottom: 25px;
+
+            gap: 20px;
+        }
+
+        .toolbar h2 {
+
+            font-size: 24px;
+        }
+
+        #status {
+
+            color: #888;
+
+            font-size: 14px;
+        }
+
+        /* ==================================================
+           MOVIE GRID
+        ================================================== */
+
+        .movie-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fill,
+                    minmax(
+                        240px,
+                        1fr
+                    )
+                );
+
+            gap: 15px;
+        }
+
+        .movie-card {
+
+            border:
+                1px solid #292929;
+
+            background: #111;
+
+            border-radius: 12px;
+
+            padding: 20px;
+
+            transition:
+                transform 0.2s,
+                border-color 0.2s,
+                background 0.2s;
+        }
+
+        .movie-card:hover {
+
+            transform:
+                translateY(-3px);
+
+            border-color: #666;
+
+            background: #151515;
+        }
+
+        .movie-number {
+
+            color: #666;
+
+            font-size: 12px;
+
+            margin-bottom: 10px;
+        }
+
+        .movie-name {
+
+            color: #fff;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            line-height: 1.4;
+
+            margin-bottom: 16px;
+
+            word-break: break-word;
+        }
+
+        .movie-button {
+
+            width: 100%;
+
+            border: 1px solid #555;
+
+            background: #fff;
+
+            color: #000;
+
+            padding: 11px 15px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            transition:
+                0.2s;
+        }
+
+        .movie-button:hover {
+
+            background: #ddd;
+        }
+
+        /* ==================================================
+           LOADING
+        ================================================== */
+
+        .loading {
+
+            display: none;
+
+            min-height: 250px;
+
+            align-items: center;
+
+            justify-content: center;
+
+            flex-direction: column;
+
+            gap: 18px;
+
+            text-align: center;
+        }
+
+        .spinner {
+
+            width: 55px;
+            height: 55px;
+
+            border:
+                4px solid #333;
+
+            border-top-color: #fff;
+
+            border-radius: 50%;
+
+            animation:
+                spin
+                0.8s
+                linear
+                infinite;
+        }
+
+        @keyframes spin {
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+
+            color: #888;
+        }
+
+        /* ==================================================
+           ERROR
+        ================================================== */
+
+        .error {
+
+            display: none;
+
+            margin-top: 20px;
+
+            padding: 18px;
+
+            border:
+                1px solid #444;
+
+            border-radius: 10px;
+
+            background: #111;
+
+            color: #aaa;
+        }
+
+        /* ==================================================
+           DETAILS
+        ================================================== */
+
+        #details {
+
+            display: none;
+
+            margin-top: 45px;
+        }
+
+        .details-title {
+
+            border-bottom:
+                1px solid #222;
+
+            padding-bottom: 20px;
+
+            margin-bottom: 25px;
+        }
+
+        .details-title h2 {
+
+            font-size: 28px;
+
+            margin-bottom: 8px;
+
+            word-break: break-word;
+        }
+
+        .details-title p {
+
+            color: #666;
+
+            font-size: 13px;
+
+            word-break: break-all;
+        }
+
+        /* ==================================================
+           SEASON
+        ================================================== */
+
+        .season-box {
+
+            display: none;
+
+            margin-bottom: 30px;
+
+            padding: 20px;
+
+            background: #0d0d0d;
+
+            border:
+                1px solid #222;
+
+            border-radius: 12px;
+        }
+
+        .season-box h3 {
+
+            margin-bottom: 15px;
+        }
+
+        .season-link {
+
+            display: inline-block;
+
+            margin:
+                5px 5px 5px 0;
+
+            padding:
+                10px 15px;
+
+            border:
+                1px solid #444;
+
+            border-radius: 7px;
+
+            color: #fff;
+
+            text-decoration: none;
+        }
+
+        .season-link:hover {
+
+            background: #fff;
+
+            color: #000;
+        }
+
+        /* ==================================================
+           QUALITY
+        ================================================== */
+
+        .quality-section {
+
+            margin-bottom: 30px;
+        }
+
+        .quality-title {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 15px;
+
+            padding-bottom: 10px;
+
+            border-bottom:
+                1px solid #222;
+        }
+
+        .quality-title h3 {
+
+            font-size: 20px;
+        }
+
+        .quality-count {
+
+            color: #666;
+
+            font-size: 13px;
+        }
+
+        .quality-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fill,
+                    minmax(
+                        250px,
+                        1fr
+                    )
+                );
+
+            gap: 12px;
+        }
+
+        .video-card {
+
+            background: #101010;
+
+            border:
+                1px solid #222;
+
+            border-radius: 10px;
+
+            padding: 15px;
+        }
+
+        .video-name {
+
+            font-size: 14px;
+
+            font-weight: bold;
+
+            line-height: 1.4;
+
+            margin-bottom: 12px;
+
+            word-break: break-word;
+        }
+
+        .video-meta {
+
+            color: #666;
+
+            font-size: 12px;
+
+            margin-bottom: 12px;
+        }
+
+        .video-link {
+
+            display: inline-block;
+
+            width: 100%;
+
+            text-align: center;
+
+            padding: 9px;
+
+            border-radius: 6px;
+
+            background: #fff;
+
+            color: #000;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            font-size: 13px;
+        }
+
+        .video-link:hover {
+
+            background: #ddd;
+        }
+
+        .empty {
+
+            color: #555;
+
+            padding: 20px;
+
+            border:
+                1px dashed #292929;
+
+            border-radius: 8px;
+        }
+
+        /* ==================================================
+           MOBILE
+        ================================================== */
+
+        @media (max-width: 600px) {
+
+            .hero {
+
+                min-height: 260px;
+
+                background-attachment:
+                    scroll;
+            }
+
+            .container {
+
+                padding:
+                    25px 12px 50px;
+            }
+
+            .toolbar {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+            }
+
+            .movie-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+            .quality-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <!-- ==================================================
+         HERO
+    ================================================== -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <h1>
+                College Video Library
+            </h1>
+
+            <p>
+                Browse your classes and training videos
+            </p>
+
+            <span
+                class="badge"
+                id="count"
+            >
+                Loading...
+            </span>
+
+        </div>
+
+    </section>
+
+
+    <!-- ==================================================
+         MAIN
+    ================================================== -->
+
+    <main class="container">
+
+        <div class="toolbar">
+
+            <h2>
+                All Classes
+            </h2>
+
+            <span id="status">
+                Loading...
+            </span>
+
+        </div>
+
+
+        <!-- MOVIES -->
+
+        <div
+            class="movie-grid"
+            id="movieGrid"
+        ></div>
+
+
+        <!-- LOADING -->
+
+        <div
+            class="loading"
+            id="loading"
+        >
+
+            <div class="spinner"></div>
+
+            <div class="loading-text">
+
+                Loading selected class...
+
+                <br>
+
+                Please wait
+
+            </div>
+
+        </div>
+
+
+        <!-- ERROR -->
+
+        <div
+            class="error"
+            id="error"
+        ></div>
+
+
+        <!-- ==================================================
+             DETAILS
+        ================================================== -->
+
+        <section id="details">
+
+            <div class="details-title">
+
+                <h2 id="selectedName"></h2>
+
+                <p id="selectedLink"></p>
+
+            </div>
+
+
+            <!-- SEASON -->
+
+            <div
+                class="season-box"
+                id="seasonBox"
+            >
+
+                <h3>
+                    Seasons
+                </h3>
+
+                <div
+                    id="seasonLinks"
+                ></div>
+
+            </div>
+
+
+            <!-- QUALITY -->
+
+            <div
+                class="quality-section"
+                id="quality360"
+            >
+
+                <div class="quality-title">
+
+                    <h3>
+                        360p
+                    </h3>
+
+                    <span
+                        class="quality-count"
+                        id="count360"
+                    >
+                        0
+                    </span>
+
+                </div>
+
+                <div
+                    class="quality-grid"
+                    id="grid360"
+                ></div>
+
+            </div>
+
+
+            <div
+                class="quality-section"
+                id="quality720"
+            >
+
+                <div class="quality-title">
+
+                    <h3>
+                        720p
+                    </h3>
+
+                    <span
+                        class="quality-count"
+                        id="count720"
+                    >
+                        0
+                    </span>
+
+                </div>
+
+                <div
+                    class="quality-grid"
+                    id="grid720"
+                ></div>
+
+            </div>
+
+
+            <div
+                class="quality-section"
+                id="quality1080"
+            >
+
+                <div class="quality-title">
+
+                    <h3>
+                        1080p
+                    </h3>
+
+                    <span
+                        class="quality-count"
+                        id="count1080"
+                    >
+                        0
+                    </span>
+
+                </div>
+
+                <div
+                    class="quality-grid"
+                    id="grid1080"
+                ></div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        // ==================================================
+        // LOAD MOVIES
+        // ==================================================
+
+        async function loadMovies() {
+
+            const grid =
+                document.getElementById(
+                    "movieGrid"
+                );
+
+            const status =
+                document.getElementById(
+                    "status"
+                );
+
+            const count =
+                document.getElementById(
+                    "count"
+                );
+
+            try {
+
+                status.textContent =
+                    "Loading classes...";
+
+                const response =
+                    await fetch("/movies");
+
+                const data =
+                    await response.json();
+
+                if (!response.ok ||
+                    !data.success) {
+
+                    throw new Error(
+                        data.error ||
+                        "Unable to load classes"
+                    );
+                }
+
+                grid.innerHTML = "";
+
+                const movies =
+                    data.movies || [];
+
+                count.textContent =
+                    `${movies.length} Classes`;
+
+                status.textContent =
+                    `${movies.length} classes available`;
+
+                if (movies.length === 0) {
+
+                    grid.innerHTML = `
+                        <div class="empty">
+                            No classes found.
+                        </div>
+                    `;
+
+                    return;
+                }
+
+                movies.forEach(
+                    (movie, index) => {
+
+                        const card =
+                            document.createElement(
+                                "div"
+                            );
+
+                        card.className =
+                            "movie-card";
+
+                        card.innerHTML = `
+
+                            <div class="movie-number">
+                                #${index + 1}
+                            </div>
+
+                            <div class="movie-name">
+                                ${escapeHtml(movie.name)}
+                            </div>
+
+                            <button
+                                class="movie-button"
+                                onclick='loadMovie(
+                                    ${JSON.stringify(movie.name)},
+                                    ${JSON.stringify(movie.link)}
+                                )'
+                            >
+                                View Class
+                            </button>
+
+                        `;
+
+                        grid.appendChild(card);
+                    }
+                );
+
+            }
+            catch (error) {
+
+                console.error(error);
+
+                count.textContent =
+                    "Error";
+
+                status.textContent =
+                    "Unable to load";
+
+                showError(
+                    error.message
+                );
+            }
+        }
+
+
+        // ==================================================
+        // LOAD SELECTED MOVIE
+        // ==================================================
+
+        async function loadMovie(
+            name,
+            link
+        ) {
+
+            const loading =
+                document.getElementById(
+                    "loading"
+                );
+
+            const details =
+                document.getElementById(
+                    "details"
+                );
+
+            const error =
+                document.getElementById(
+                    "error"
+                );
+
+            error.style.display =
+                "none";
+
+            details.style.display =
+                "none";
+
+            loading.style.display =
+                "flex";
+
+            window.scrollTo({
+                top: details.offsetTop || 0,
+                behavior: "smooth"
+            });
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/movie",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                name: name,
+                                link: link
+                            })
+                        }
+                    );
+
+                const data =
+                    await response.json();
+
+                if (!response.ok ||
+                    !data.success) {
+
+                    throw new Error(
+                        data.error ||
+                        "Unable to load class"
+                    );
+                }
+
+                displayMovie(
+                    data.data
+                );
+
+            }
+            catch (error) {
+
+                console.error(error);
+
+                showError(
+                    error.message
+                );
+            }
+            finally {
+
+                loading.style.display =
+                    "none";
+            }
+        }
+
+
+        // ==================================================
+        // DISPLAY MOVIE
+        // ==================================================
+
+        function displayMovie(data) {
+
+            const details =
+                document.getElementById(
+                    "details"
+                );
+
+            document.getElementById(
+                "selectedName"
+            ).textContent =
+                data.name || "";
+
+            document.getElementById(
+                "selectedLink"
+            ).textContent =
+                data.link || "";
+
+            details.style.display =
+                "block";
+
+
+            // ----------------------------------------------
+            // SEASONS
+            // ----------------------------------------------
+
+            const seasonBox =
+                document.getElementById(
+                    "seasonBox"
+                );
+
+            const seasonLinks =
+                document.getElementById(
+                    "seasonLinks"
+                );
+
+            seasonLinks.innerHTML = "";
+
+            const seasons =
+                data.season || [];
+
+            if (seasons.length > 0) {
+
+                seasonBox.style.display =
+                    "block";
+
+                seasons.forEach(
+                    season => {
+
+                        const link =
+                            document.createElement(
+                                "a"
+                            );
+
+                        link.className =
+                            "season-link";
+
+                        link.href =
+                            season.link;
+
+                        link.target =
+                            "_blank";
+
+                        link.rel =
+                            "noopener noreferrer";
+
+                        link.textContent =
+                            season.name;
+
+                        seasonLinks.appendChild(
+                            link
+                        );
+                    }
+                );
+
+            }
+            else {
+
+                seasonBox.style.display =
+                    "none";
+            }
+
+
+            // ----------------------------------------------
+            // QUALITY
+            // ----------------------------------------------
+
+            displayQuality(
+                "360",
+                data["360"] || []
+            );
+
+            displayQuality(
+                "720",
+                data["720"] || []
+            );
+
+            displayQuality(
+                "1080",
+                data["1080"] || []
+            );
+
+
+            details.scrollIntoView({
+                behavior: "smooth"
+            });
+        }
+
+
+        // ==================================================
+        // DISPLAY QUALITY
+        // ==================================================
+
+        function displayQuality(
+            quality,
+            items
+        ) {
+
+            const section =
+                document.getElementById(
+                    `quality${quality}`
+                );
+
+            const grid =
+                document.getElementById(
+                    `grid${quality}`
+                );
+
+            const count =
+                document.getElementById(
+                    `count${quality}`
+                );
+
+            grid.innerHTML = "";
+
+            count.textContent =
+                items.length;
+
+
+            if (items.length === 0) {
+
+                section.style.display =
+                    "none";
+
+                return;
+            }
+
+            section.style.display =
+                "block";
+
+
+            items.forEach(
+                item => {
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+                    card.className =
+                        "video-card";
+
+                    const name =
+                        escapeHtml(
+                            item.name || ""
+                        );
+
+                    const size =
+                        escapeHtml(
+                            item.size || ""
+                        );
+
+                    const format =
+                        escapeHtml(
+                            item.format || ""
+                        );
+
+                    card.innerHTML = `
+
+                        <div class="video-name">
+                            ${name}
+                        </div>
+
+                        <div class="video-meta">
+
+                            ${size}
+
+                            ${size && format
+                                ? " • "
+                                : ""}
+
+                            ${format}
+
+                        </div>
+
+                        <a
+                            class="video-link"
+                            href="${escapeAttribute(item.link || "")}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Open Video Page
+                        </a>
+
+                    `;
+
+                    grid.appendChild(
+                        card
+                    );
+                }
+            );
+        }
+
+
+        // ==================================================
+        // ERROR
+        // ==================================================
+
+        function showError(message) {
+
+            const error =
+                document.getElementById(
+                    "error"
+                );
+
+            error.textContent =
+                "Error: " + message;
+
+            error.style.display =
+                "block";
+        }
+
+
+        // ==================================================
+        // HTML ESCAPE
+        // ==================================================
+
+        function escapeHtml(text) {
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+            div.textContent =
+                text;
+
+            return div.innerHTML;
+        }
+
+
+        function escapeAttribute(text) {
+
+            return String(text)
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+                .replace(
+                    /'/g,
+                    "&#39;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                );
+        }
+
+
+        // ==================================================
+        // START
+        // ==================================================
+
+        loadMovies();
+
+    </script>
+
+</body>
+
+</html>
