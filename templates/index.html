@@ -10,7 +10,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>College Video Library</title>
+    <title>Tamil Movies - 2026</title>
 
     <style>
 
@@ -667,7 +667,7 @@
         <div class="hero-content">
 
             <h1>
-                Tamil Movies
+                Tamil Movies - 2026
             </h1>
 
             <p>
@@ -892,7 +892,7 @@
             try {
 
                 status.textContent =
-                    "Loading classes...";
+                    "Loading movies...";
 
                 const response =
                     await fetch("/movies");
@@ -905,7 +905,7 @@
 
                     throw new Error(
                         data.error ||
-                        "Unable to load classes"
+                        "Unable to load movies"
                     );
                 }
 
