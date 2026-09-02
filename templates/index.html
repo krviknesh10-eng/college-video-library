@@ -957,7 +957,7 @@
                                 onclick='loadMovie(
                                     ${JSON.stringify(movie.name)},
                                     ${JSON.stringify(movie.link)}
-                                )'
+                                );showMessage()'
                             >
                                 View Movie
                             </button>
@@ -1362,6 +1362,11 @@
         // ==================================================
 
         loadMovies();
+
+        function showMessage()
+        {
+            alert("Please wait for 10 seconds, then scroll to the bottom of the page. You will find your movie download link there");
+        }
 
     </script>
 
