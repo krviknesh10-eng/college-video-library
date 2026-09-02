@@ -14,9 +14,12 @@ CORS(app)
 
 # IMPORTANT:
 # Replace this with your AUTHORIZED college/training website.
-BASE_URL = "https://YOUR-COLLEGE-SITE.com"
+BASE_URL = "https://moviesdatamil.me"
 
-START_URL = f"{BASE_URL}/videos/"
+START_URL = (
+    "https://moviesdatamil.me/tamil-2026-movies/"
+)
+
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0"
